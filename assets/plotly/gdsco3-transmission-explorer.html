@@ -11,18 +11,13 @@ body { font-family: Arial, sans-serif; margin: 20px; background: #f7f9fc; color:
 h1 { margin: 0 0 8px 0; font-size: 28px; }
 p, li { line-height: 1.45; }
 .small { color: #4b5563; font-size: 14px; }
-#plot { width: 100%; height: 720px; }
+#plot { width: 100%; height: 540px; }
 </style>
 </head>
 <body>
 <div class="card">
-<h1>GdScO₃ UV transmission — Crystal A (grating spectrometer)</h1>
-<p>This explorer compares the <strong>sample</strong>, <strong>reference-only</strong>, and <strong>air</strong> spectra for GdScO₃ Crystal A measured on a grating spectrometer. The main transmission trace is computed as <strong>sample / reference</strong>; an <strong>air / reference</strong> comparison is included as a consistency check.</p>
-<ul>
-<li>Primary x-axis: wavelength (nm)</li>
-<li>Primary transmission traces use only points where reference intensity &gt; 20 counts, to avoid huge edge artifacts from dividing by very small numbers.</li>
-<li>No dark correction applied: traces show an uncorrected sample/reference ratio.</li>
-</ul>
+<h1 style="font-size:1.25rem; margin:0.2rem 0 0;">GdScO₃ deep-UV transmission — Crystal A</h1>
+<p style="margin:0.4rem 0 0.9rem;">Deep-UV transmission of <strong>Crystal A</strong>, computed as <strong>sample / reference</strong> (only points with reference &gt; 20 counts; no dark correction). The buttons switch between the transmission view and the raw spectrometer counts.</p>
 <div id="plot"></div>
 <p class="small">Use the legend to hide/show traces. The top-right buttons switch between transmission view and raw-intensity view.</p>
 </div>
@@ -10426,22 +10421,23 @@ const traces = [
 ];
 
 const layout = {
-  title: 'GdScO\u2083 Crystal A \u2014 transmission and raw spectra',
   xaxis: { title: 'Wavelength (nm)' },
-  yaxis: { title: 'Transmission (%)' },
+  yaxis: { title: 'Transmission (%)', range: [-5, 125] },
   hovermode: 'x unified',
   updatemenus: [{
     type: 'buttons',
     direction: 'right',
-    x: 0.01,
-    y: 1.15,
+    x: 0,
+    xanchor: 'left',
+    y: 1.02,
+    yanchor: 'bottom',
     buttons: [
       {
         label: 'Transmission view',
         method: 'update',
         args: [
           { visible: [true, true, false, false, false] },
-          { yaxis: { title: 'Transmission (%)' } }
+          { 'yaxis.title': 'Transmission (%)', 'yaxis.range': [-5, 125] }
         ]
       },
       {
@@ -10449,7 +10445,7 @@ const layout = {
         method: 'update',
         args: [
           { visible: [false, false, true, true, true] },
-          { yaxis: { title: 'Intensity (a.u.)' } }
+          { 'yaxis.title': 'Intensity (a.u.)', 'yaxis.autorange': true }
         ]
       },
       {
@@ -10457,16 +10453,17 @@ const layout = {
         method: 'update',
         args: [
           { visible: [true, true, true, true, true] },
-          { yaxis: { title: 'Mixed scale - inspect with legend carefully' } }
+          { 'yaxis.title': 'Mixed scale', 'yaxis.autorange': true }
         ]
       }
     ]
   }],
   legend: { orientation: 'h', y: -0.2 },
-  margin: { t: 90, r: 30, b: 90, l: 70 }
+  margin: { t: 55, r: 20, b: 80, l: 65 }
 };
 
 Plotly.newPlot('plot', traces, layout, {responsive: true, displaylogo: false});
 </script>
+<script>window.addEventListener('load', () => { setTimeout(() => Plotly.Plots.resize('plot'), 150); });</script>
 </body>
 </html>
