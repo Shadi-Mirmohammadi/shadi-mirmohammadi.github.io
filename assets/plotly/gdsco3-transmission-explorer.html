@@ -12,14 +12,22 @@ h1 { margin: 0 0 8px 0; font-size: 28px; }
 p, li { line-height: 1.45; }
 .small { color: #4b5563; font-size: 14px; }
 #plot { width: 100%; height: 540px; }
+.viewbtns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
+.viewbtns button { font: 13px/1.2 Arial, sans-serif; padding: 7px 12px; border: 1px solid #c7d0dd; border-radius: 8px; background: #f2f5f9; color: #1f2937; cursor: pointer; }
+.viewbtns button.active { background: #3b5bdb; border-color: #3b5bdb; color: #fff; }
 </style>
 </head>
 <body>
 <div class="card">
 <h1 style="font-size:1.25rem; margin:0.2rem 0 0;">GdScO₃ deep-UV transmission — Crystal A</h1>
 <p style="margin:0.4rem 0 0.9rem;">Deep-UV transmission of <strong>Crystal A</strong>, computed as <strong>sample / reference</strong> (only points with reference &gt; 20 counts; no dark correction). The buttons switch between the transmission view and the raw spectrometer counts.</p>
+<div class="viewbtns" role="group" aria-label="Chart view">
+  <button id="btn-tr" class="active" type="button">Transmission view</button>
+  <button id="btn-raw" type="button">Raw intensity view</button>
+  <button id="btn-all" type="button">Show all traces</button>
+</div>
 <div id="plot"></div>
-<p class="small">Use the legend to hide/show traces. The top-right buttons switch between transmission view and raw-intensity view.</p>
+<p class="small">Use the legend to hide/show traces. The buttons above the chart switch between transmission view and raw-intensity view.</p>
 </div>
 <script>
 const sampleTransmission = [
@@ -10424,45 +10432,25 @@ const layout = {
   xaxis: { title: 'Wavelength (nm)' },
   yaxis: { title: 'Transmission (%)', range: [-5, 125] },
   hovermode: 'x unified',
-  updatemenus: [{
-    type: 'buttons',
-    direction: 'right',
-    x: 0,
-    xanchor: 'left',
-    y: 1.02,
-    yanchor: 'bottom',
-    buttons: [
-      {
-        label: 'Transmission view',
-        method: 'update',
-        args: [
-          { visible: [true, true, false, false, false] },
-          { 'yaxis.title': 'Transmission (%)', 'yaxis.range': [-5, 125] }
-        ]
-      },
-      {
-        label: 'Raw intensity view',
-        method: 'update',
-        args: [
-          { visible: [false, false, true, true, true] },
-          { 'yaxis.title': 'Intensity (a.u.)', 'yaxis.autorange': true }
-        ]
-      },
-      {
-        label: 'Show all traces',
-        method: 'update',
-        args: [
-          { visible: [true, true, true, true, true] },
-          { 'yaxis.title': 'Mixed scale', 'yaxis.autorange': true }
-        ]
-      }
-    ]
-  }],
   legend: { orientation: 'h', y: -0.2 },
-  margin: { t: 55, r: 20, b: 80, l: 65 }
+  margin: { t: 20, r: 20, b: 80, l: 65 }
 };
 
 Plotly.newPlot('plot', traces, layout, {responsive: true, displaylogo: false});
+
+// View switching lives in real HTML buttons (they wrap on narrow screens,
+// unlike Plotly updatemenus, which clip at the plot edge)
+const views = {
+  'btn-tr':  [{ visible: [true, true, false, false, false] }, { 'yaxis.title': 'Transmission (%)', 'yaxis.range': [-5, 125], 'yaxis.autorange': false }],
+  'btn-raw': [{ visible: [false, false, true, true, true] }, { 'yaxis.title': 'Intensity (a.u.)', 'yaxis.autorange': true }],
+  'btn-all': [{ visible: [true, true, true, true, true] }, { 'yaxis.title': 'Mixed scale', 'yaxis.autorange': true }],
+};
+document.querySelectorAll('.viewbtns button').forEach((b) => {
+  b.addEventListener('click', () => {
+    Plotly.update('plot', views[b.id][0], views[b.id][1]);
+    document.querySelectorAll('.viewbtns button').forEach((x) => x.classList.toggle('active', x === b));
+  });
+});
 </script>
 <script>window.addEventListener('load', () => { setTimeout(() => Plotly.Plots.resize('plot'), 150); });</script>
 </body>

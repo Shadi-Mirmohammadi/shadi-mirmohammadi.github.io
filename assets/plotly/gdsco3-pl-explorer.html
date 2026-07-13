@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GdScO₃ PL Explorer — Crystal A vs Crystal B</title>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
@@ -162,7 +163,8 @@ Plotly.newPlot('pl_plot',
     xaxis: {title:'Wavelength (nm)', range:[D.pl_min, D.pl_max]},
     yaxis: {title:'Intensity (counts)'},
     margin: {t:50, b:50, l:70, r:20},
-    title: {text:'Excitation = '+initEx.toFixed(1)+' nm  |  Laser: '+initLaser.toFixed(0)+' nm', font:{size:13}},
+    title: {text:'Excitation = '+initEx.toFixed(1)+' nm  |  Laser: '+initLaser.toFixed(0)+' nm', font:{size:13}, x: 0, xanchor: 'left'},
+    modebar: {orientation: 'v'},
     showlegend: false, hovermode: false, dragmode: 'zoom',
     shapes: plShapes(initPlLine, initLaser, initSH),
     annotations: plAnnotations(initPlLine, initLaser, initSH)
