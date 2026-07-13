@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="spectrum" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4a6fd4"/>
+      <stop offset="0.28" stop-color="#c2502a"/>
+      <stop offset="0.46" stop-color="#e0921e"/>
+      <stop offset="0.62" stop-color="#2f9e50"/>
+      <stop offset="0.8" stop-color="#4b52e8"/>
+      <stop offset="1" stop-color="#8b45e8"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="13" fill="#0c0e14"/>
+  <text x="32" y="37" text-anchor="middle" dominant-baseline="middle"
+        font-family="Helvetica, Arial, sans-serif" font-size="27" font-weight="800"
+        letter-spacing="-1" fill="#ffffff">SM</text>
+  <rect x="13" y="47" width="38" height="4.5" rx="2.25" fill="url(#spectrum)"/>
+</svg>
