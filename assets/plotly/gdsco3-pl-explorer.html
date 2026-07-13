@@ -11,16 +11,22 @@
   #info { font-size: 12px; color: #888; margin-bottom: 8px; }
   #filter-bar { margin-bottom: 10px; }
   .filter-btn {
-    padding: 5px 18px; margin-right: 6px; border: 1.5px solid #555;
-    border-radius: 4px; cursor: pointer; font-size: 13px;
+    padding: 8px 18px; margin-right: 6px; border: 1.5px solid #555;
+    border-radius: 6px; cursor: pointer; font-size: 14px;
     background: #eee; color: #333;
   }
   .filter-btn.active { background: #333; color: #fff; }
+  @media (max-width: 600px) {
+    body { margin: 10px; }
+    h2 { font-size: 16px; }
+    #trans_plot { height: 220px !important; }
+    #pl_plot { height: 440px !important; }
+  }
 </style>
 </head>
 <body>
 <h2>GdScO₃ photoluminescence — Crystal A (Stonylab) vs Crystal B (CrysTec)</h2>
-<div id="info">Drag the red line on transmission to select excitation &nbsp;|&nbsp; Drag black line on PL to mark emission</div>
+<div id="info">Drag or tap on the transmission plot to select excitation &nbsp;|&nbsp; Drag or tap on the PL plot to mark emission</div>
 <div id="filter-bar">
   <button class="filter-btn active" data-filter="All" onclick="setFilter('All')">All</button>
 </div>
@@ -237,6 +243,39 @@ plDiv.addEventListener('mousemove', e => {
   const wl = clientToDataX(plDiv, e.clientX);
   plDiv.style.cursor = Math.abs(wl - plDiv._fullLayout.shapes[0].x0) < (D.pl_max-D.pl_min)*0.02 ? 'ew-resize' : 'default';
 });
+
+// ── Touch support (phones): drag with a finger-sized grab zone, or just
+//    tap anywhere on a plot to jump its line there ─────────────────────
+let touchMoved = false;
+function attachTouch(div, isTrans) {
+  const range = isTrans ? (D.trans_max - D.trans_min) : (D.pl_max - D.pl_min);
+  div.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    touchMoved = false;
+    const wl = clientToDataX(div, e.touches[0].clientX);
+    if (Math.abs(wl - div._fullLayout.shapes[0].x0) < range * 0.06) {
+      if (isTrans) dragTrans = true; else dragPL = true;
+      e.preventDefault();
+    }
+  }, {passive: false});
+  div.addEventListener('touchmove', e => {
+    touchMoved = true;
+    if (e.touches.length !== 1) return;
+    const wl = clientToDataX(div, e.touches[0].clientX);
+    if (dragTrans && isTrans) { updateTrans(wl); e.preventDefault(); }
+    else if (dragPL && !isTrans) { updatePLline(wl); e.preventDefault(); }
+  }, {passive: false});
+  div.addEventListener('touchend', e => {
+    const wasDrag = (dragTrans && isTrans) || (dragPL && !isTrans);
+    dragTrans = false; dragPL = false;
+    if (!wasDrag && !touchMoved && e.changedTouches.length === 1) {
+      const wl = clientToDataX(div, e.changedTouches[0].clientX);
+      if (isTrans) updateTrans(wl); else updatePLline(wl);
+    }
+  });
+}
+attachTouch(transDiv, true);
+attachTouch(plDiv, false);
 </script>
 </body>
 </html>
