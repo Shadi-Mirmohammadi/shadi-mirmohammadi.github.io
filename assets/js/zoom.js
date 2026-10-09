@@ -1,0 +1,1 @@
+$(document).ready(function(){medium_zoom=mediumZoom("[data-zoomable], .post figure img",{background:getComputedStyle(document.documentElement).getPropertyValue("--global-bg-color")+"ee"})});
